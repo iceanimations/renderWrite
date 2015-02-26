@@ -7,11 +7,24 @@ import nuke
 import re
 import msgBox
 from PyQt4.QtGui import QApplication, QMessageBox
+import time
+from datetime import datetime
+import sys
 
 beauty = re.compile('beauty', re.I)
 character = re.compile('char', re.I)
 parent = QApplication.activeWindow()
 __title__ = 'Render Write'
+
+def getTime(seconds):
+    tim = str(datetime.fromtimestamp(seconds)).split()[-1].split('.')[0].split(':')
+    hour = int(tim[0])
+    if hour > 12:
+        hour = hour%12
+    elif hour == 0:
+        hour = 12
+    return ':'.join([str(hour), tim[1], tim[2]])
+    
 
 def render(*args):
     if not [node for node in nuke.selectedNodes() if node.Class() == 'Write']:
@@ -57,5 +70,16 @@ def render(*args):
                                  btns=QMessageBox.Yes|QMessageBox.No)
         if btn == QMessageBox.No:
             return
+    length = len(goodNodes)
+    done = 1
+    print 'rendering', goodNodes
     for goodNode, value in goodNodes.items():
-            nuke.render(goodNode, value[0], value[1])
+        seconds = time.time()
+        sys.stdout.write(str(done) +' of '+ str(length) +' ==> '+ str(goodNode) +' Start: '+ str(getTime(seconds)))
+        nuke.render(goodNode, value[0], value[1], continueOnError=True)
+        done += 1
+        seconds2 = time.time()
+        m, s = divmod(seconds2 - seconds, 60)
+        h, m = divmod(m, 60)
+        sys.stdout.write(' - End: '+ str(getTime(seconds2)) +" (%d:%02d:%02d) "%(h, m, s))
+        print ''
