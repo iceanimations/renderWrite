@@ -100,7 +100,7 @@ def render(*args):
     print 'Starting render (%s nodes)'%str(length), goodNodes
     for goodNode, value in goodNodes.items():
         seconds = time.time()
-        filepath = goodNode.knob('file').getValue()
+        filepath = nuke.toNode(goodNode).knob('file').getValue()
         basename = os.path.basename(filepath).split('.')[0]
         sys.stdout.write(str(done) +' of '+ str(length) +' ==> '+ str(goodNode)
                 + ' (%s) '%basename+' Start: '+ str(getTime(seconds)))
