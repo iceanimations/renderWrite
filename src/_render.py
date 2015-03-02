@@ -87,7 +87,7 @@ def render(*args):
         for nodeName, msg in badNodes.items():
             detail += nodeName +'\nReason: '+msg +'\n'
         btn = msgBox.showMessage(parent, title=__title__,
-                                 msg='Can not render a few nodes',
+                                 msg='Errors occurred while preparing rendering for some nodes',
                                  ques='Do you want to proceed anyway?',
                                  icon=QMessageBox.Information,
                                  details=detail,
@@ -107,7 +107,7 @@ def render(*args):
         except RuntimeError:
             flag = True
             btn = msgBox.showMessage(parent, title=__title__,
-                                     msg='Could not render "%s" due to some error or user intruption'%goodNode,
+                                     msg='Could not render "%s" due to some error or user interruption'%goodNode,
                                      ques='Do you want to continue with the remaining nodes?',
                                      icon=QMessageBox.Question,
                                      btns=QMessageBox.Yes|QMessageBox.No)
