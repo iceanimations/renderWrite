@@ -11,6 +11,7 @@ from PyQt4.QtGui import QApplication, QMessageBox
 import time
 from datetime import datetime
 import sys
+import appUsageApp
 
 beauty = re.compile('beauty', re.I)
 character = re.compile('char', re.I)
@@ -123,3 +124,4 @@ def render(*args):
         sys.stdout.write(' - End: '+ str(getTime(seconds2)) +" (%d:%02d:%02d) "%(h, m, s))
         status = ' ==> Not rendered' if flag else ' ==> Rendered successfully'
         print status
+    appUsageApp.updateDatabase('BatchRender')
