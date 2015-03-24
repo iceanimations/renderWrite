@@ -95,33 +95,33 @@ def render(*args):
                                  btns=QMessageBox.Yes|QMessageBox.No)
         if btn == QMessageBox.No:
             return
-
+    
     length = len(goodNodes)
     done = 1
-    print 'Starting render (%s nodes)'%str(length), goodNodes
+    print 'Starting render (%s nodes)'%str(length)
     for goodNode, value in goodNodes.items():
         seconds = time.time()
         filepath = nuke.toNode(goodNode).knob('file').getValue()
         basename = os.path.basename(filepath).split('.')[0]
         sys.stdout.write(str(done) +' of '+ str(length) +' ==> '+ str(goodNode)
-                + ' (%s) '%basename+' Start: '+ str(getTime(seconds)))
+                + ' (%s) '%basename+' Frame Range:(%s, %s) '%(value[0], value[1])+' Start: '+ str(getTime(seconds)))
         flag = False
         try:
-            nuke.render(goodNode, value[0], value[1], continueOnError=True)
-        except RuntimeError:
+            nuke.execute(goodNode, value[0], value[1], continueOnError=True)
+        except Exception as ex:
             flag = True
-            btn = msgBox.showMessage(parent, title=__title__,
-                                     msg='Could not render "%s" due to some error or user interruption'%goodNode,
-                                     ques='Do you want to continue with the remaining nodes?',
-                                     icon=QMessageBox.Question,
-                                     btns=QMessageBox.Yes|QMessageBox.No)
-            if btn == QMessageBox.No:
-                break
+            if str(ex).startswith('Cancelled'):
+                btn = msgBox.showMessage(parent, title=__title__,
+                                         msg='Could not render %s, %s'%(goodNode, str(ex)),
+                                         ques='Do you want to continue with the remaining nodes?',
+                                         icon=QMessageBox.Question,
+                                         btns=QMessageBox.Yes|QMessageBox.No)
+                if btn == QMessageBox.No:
+                    break
         done += 1
         seconds2 = time.time()
         m, s = divmod(seconds2 - seconds, 60)
         h, m = divmod(m, 60)
         sys.stdout.write(' - End: '+ str(getTime(seconds2)) +" (%d:%02d:%02d) "%(h, m, s))
-        status = ' ==> Not rendered' if flag else ' ==> Rendered successfully'
-        print status
+        print ' ==> Not rendered (%s)'%str(ex) if flag else ' ==> Rendered successfully'
     appUsageApp.updateDatabase('BatchRender')
