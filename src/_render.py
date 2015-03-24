@@ -104,7 +104,7 @@ def render(*args):
         filepath = nuke.toNode(goodNode).knob('file').getValue()
         basename = os.path.basename(filepath).split('.')[0]
         sys.stdout.write(str(done) +' of '+ str(length) +' ==> '+ str(goodNode)
-                + ' (%s) '%basename+' Frame Range:(%s, %s) '%(value[0], value[1])+' Start: '+ str(getTime(seconds)))
+                + ' (%s) '%basename+' Frame Range:(%s, %s) '%(value[0], value[1])+' Start Time: '+ str(getTime(seconds)))
         flag = False
         try:
             nuke.execute(goodNode, value[0], value[1], continueOnError=True)
@@ -122,6 +122,6 @@ def render(*args):
         seconds2 = time.time()
         m, s = divmod(seconds2 - seconds, 60)
         h, m = divmod(m, 60)
-        sys.stdout.write(' - End: '+ str(getTime(seconds2)) +" (%d:%02d:%02d) "%(h, m, s))
+        sys.stdout.write(' - End Time: '+ str(getTime(seconds2)) +" (%d:%02d:%02d) "%(h, m, s))
         print ' ==> Not rendered (%s)'%str(ex) if flag else ' ==> Rendered successfully'
     appUsageApp.updateDatabase('BatchRender')
