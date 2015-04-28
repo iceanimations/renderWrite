@@ -41,6 +41,13 @@ def mkdir(path):
         return True
     return False
 
+def getInputNodes(node):
+    nodes = set()
+    for dep in node.dependencies():
+        nodes.add(dep)
+        nodes.update(getInputNodes(dep))
+    return list(nodes)
+
 def render(*args):
     ''' get all selected nodes and render them using range determined from
     their network '''
@@ -61,8 +68,8 @@ def render(*args):
         for node in nuke.selectedNodes():
             node.setSelected(False)
 
-        writenode.setSelected(True)
-        nuke.selectConnectedNodes()
+        for node in getInputNodes(writenode):
+            node.setSelected(True) 
         first = None
         last = None
 
