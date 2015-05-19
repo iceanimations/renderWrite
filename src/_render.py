@@ -64,45 +64,45 @@ def render(*args):
     for writenode in nuke.selectedNodes():
         if writenode.Class() != 'Write':
             continue
+        goodNodes[writenode.name()] = [writenode.firstFrame(), writenode.lastFrame()]
 
-        for node in nuke.selectedNodes():
-            node.setSelected(False)
+#         for node in nuke.selectedNodes():
+#             node.setSelected(False)
+# 
+#         for node in getInputNodes(writenode):
+#             node.setSelected(True) 
+#         first = None
+#         last = None
+# 
+#         for readnode in nuke.selectedNodes('Read'):
+#             path = readnode.knob('file').getValue()
+#             if (beauty.search(path) and
+#                      character.search(path)):
+#                 first=readnode.knob('first').getValue()
+#                 last=readnode.knob('last').getValue()
+#                 break
+# 
+#         if first is not None and last is not None:
+#             parent_dir = os.path.dirname(writenode.knob('file').getValue())
+#             if mkdir(parent_dir):
+#                 goodNodes[writenode.name()] = [int(first), int(last)]
+#             else:
+#                 badNodes[writenode.name()] = 'Could not create parent Directory ' + parent_dir
+#         else:
+#             badNodes[writenode.name()] = 'Could not find frame range'
 
-        for node in getInputNodes(writenode):
-            node.setSelected(True) 
-        first = None
-        last = None
-
-        for readnode in nuke.selectedNodes('Read'):
-            path = readnode.knob('file').getValue()
-            if (beauty.search(path) and
-                     character.search(path)):
-                first=readnode.knob('first').getValue()
-                last=readnode.knob('last').getValue()
-                break
-
-        if first is not None and last is not None:
-            parent_dir = os.path.dirname(writenode.knob('file').getValue())
-            if mkdir(parent_dir):
-                goodNodes[writenode.name()] = [int(first), int(last)]
-            else:
-                badNodes[writenode.name()] = 'Could not create parent Directory ' + parent_dir
-        else:
-            badNodes[writenode.name()] = 'Could not find frame range'
-
-    if badNodes:
-        detail = ''
-        for nodeName, msg in badNodes.items():
-            detail += nodeName +'\nReason: '+msg +'\n'
-        btn = msgBox.showMessage(parent, title=__title__,
-                                 msg='Errors occurred while preparing rendering for some nodes',
-                                 ques='Do you want to proceed anyway?',
-                                 icon=QMessageBox.Information,
-                                 details=detail,
-                                 btns=QMessageBox.Yes|QMessageBox.No)
-        if btn == QMessageBox.No:
-            return
-    
+#     if badNodes:
+#         detail = ''
+#         for nodeName, msg in badNodes.items():
+#             detail += nodeName +'\nReason: '+msg +'\n'
+#         btn = msgBox.showMessage(parent, title=__title__,
+#                                  msg='Errors occurred while preparing rendering for some nodes',
+#                                  ques='Do you want to proceed anyway?',
+#                                  icon=QMessageBox.Information,
+#                                  details=detail,
+#                                  btns=QMessageBox.Yes|QMessageBox.No)
+#         if btn == QMessageBox.No:
+#             return
     length = len(goodNodes)
     done = 1
     print 'Starting render (%s nodes)'%str(length)
